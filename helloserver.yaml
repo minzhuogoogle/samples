@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: helloserver
+  name: helloserver
+  namespace: hello
+spec:
+  replicas: 6
+  selector:
+    matchLabels:
+      app: helloserver
+  template:
+    metadata:
+      labels:
+        app: helloserver
+    spec:
+      containers:
+      - image: gcr.io/syllogi-dev/gke-on-prem-networking-test-app:1.0
+        imagePullPolicy: Always
+        name: gke-on-prem-networking-test-app
+        args: ["-name", "Google Cloud Partner Engineering Team"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: helloserver
+  name: helloserver
+  namespace: hello 
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: helloserver
+  loadBalancerIP: 21.0.157.17    
+
